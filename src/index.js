@@ -13,7 +13,7 @@ const PORT =5000
 const connectDB = async () => {
   try {
      mongoose.set('strictQuery', true);
-    await mongoose.connect("mongodb+srv://tusharzade:Tusharzade123@cluster1.2mmw4v7.mongodb.net/pratice");
+    await mongoose.connect("");
     console.log("MongoDB connected successfully");
   } catch (err) {
     console.error("MongoDB connection error:", err);
