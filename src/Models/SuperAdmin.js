@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
  
- const SuperAdminSchema =mongoose.Schema({
+ const SuperAdminSchema =new mongoose.Schema({
  name:{
   type:String,
   required:true

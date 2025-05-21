@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import Adminroute from "./Route/Admin.js";
 import Userroute from "./Route/User.js";
-import clientroute from "./Route/Client.js";
+import superadminroute from "./Route/Superadmin.js";
 
 const app = express();
 app.use(express.json());
@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
 });
 app.use("/admin", Adminroute);
 app.use("/user", Userroute);
-app.use("/client", clientroute);
+app.use("/superadmin", superadminroute);
 
 // app.use("/user",UserRoute);
 
