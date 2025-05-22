@@ -1,6 +1,7 @@
 import SuperAdmin from "../Models/SuperAdmin.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { jwtDecode } from "jwt-decode";
 export const superadminregister = async (req, res) => {
   const { name, email, age, username, Address, Password } = req.body;
   try {
@@ -42,6 +43,7 @@ export const superadminregister = async (req, res) => {
     });
   }
 };
+
 export const superadminlogin = async (req, res) => {
   const { email, Password } = req.body;
   try {
@@ -59,8 +61,8 @@ export const superadminlogin = async (req, res) => {
         message: "Invalid Email or Password",
       });
     }
-    const token = jwt.sign(
-      { name: superAdmin.name, email: superAdmin.email },
+    let token = jwt.sign(
+      { name: superAdmin.name, email: superAdmin.email ,username:superAdmin.username ,age:superAdmin.age,Address:superAdmin.Address },
       process.env.JWT_SIGNATURE,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
@@ -80,45 +82,73 @@ export const superadminlogin = async (req, res) => {
     });
   }
 };
+
 export const changepassword = async (req, res) => {
   const { email, CurrentPassword, NewPassword, ConfirmPassword } = req.body;
   try {
-    const user = await SuperAdmin.findOne({email});
+    const user = await SuperAdmin.findOne({ email });
     if (!user) {
       return res.json({
         success: false,
         message: "Invalid email....",
       });
     }
-    const ispasswordmatch = await bcrypt.compare(CurrentPassword,user.Password);
-   if(NewPassword !== ConfirmPassword){
-    return res.json({
-      success:false,
-      message:"New password and confirm password does not match"
-    })
-   }
+    const ispasswordmatch = await bcrypt.compare(
+      CurrentPassword,
+      user.Password
+    );
+    if (NewPassword !== ConfirmPassword) {
+      return res.json({
+        success: false,
+        message: "New password and confirm password does not match",
+      });
+    }
     if (ispasswordmatch) {
-      const hashpassword = await bcrypt.hash(ConfirmPassword,10);
+      const hashpassword = await bcrypt.hash(ConfirmPassword, 10);
       const Savenewpassword = await SuperAdmin.updateOne(
         { email: email },
         { $set: { Password: hashpassword } }
       );
-     return res.json({
+      return res.json({
         success: true,
         message: "Password Changed Successfulyy...",
-        data:Savenewpassword
+        data: Savenewpassword,
       });
-    }else{
+    } else {
       return res.json({
-         success:false,
-         message:"Old passwword and new password does not match"
-      })
+        success: false,
+        message: "Old passwword and new password does not match",
+      });
     }
   } catch (err) {
     return res.json({
       success: false,
-      message: "err",
+      message: "Internal Server Error",
       err,
+    });
+  }
+};
+
+export const GetCurrentSuperAdmin = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer")) {
+      return res.status(400).json({
+        success: false,
+        message: "Token not passed",
+      });
+    }
+    const token = authHeader.split(" ")[1];
+       const decode = jwt.verify(token, process.env.JWT_SIGNATURE);
+    res.status(200).json({
+      success: true,
+      message: "get user data",
+      data: decode,
+    });
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      message: "Internal Server Error",
     });
   }
 };
