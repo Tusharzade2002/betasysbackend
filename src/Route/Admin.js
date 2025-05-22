@@ -1,8 +1,8 @@
 import express from 'express'
-import {adminregister,adminlogin ,adminlogout} from '../Controller/Admin.js'
+import {adminregister,adminlogin ,changepassword} from '../Controller/Admin.js'
 const router =express.Router();
 router.post("/register",adminregister);
 router.post("/login",adminlogin);
-router.get("/logout",adminlogout);
+router.post("/changepassword",changepassword);
 
 export default router
