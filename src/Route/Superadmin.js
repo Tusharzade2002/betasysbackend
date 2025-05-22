@@ -1,7 +1,7 @@
 import express from 'express'
-import { superadminregister,superadminlogin,superadminlogout } from '../Controller/Superadmin.js';
+import { superadminregister,superadminlogin,changepassword } from '../Controller/Superadmin.js';
 const router =express.Router();
 router.post("/register",superadminregister);
 router.post("/login",superadminlogin);
-router.post("/logout",superadminlogout);
+router.post("/changepassword",changepassword);
 export default router
