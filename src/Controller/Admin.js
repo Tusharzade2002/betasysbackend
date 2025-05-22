@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import Admin from "../Models/AdminRegistration.js";
-import jwt from "jsonwebtoken";
+import jwt, { decode } from "jsonwebtoken";
 export const adminregister = async (req, res) => {
   try {
     const { name, email, age, username, Address, Password } = req.body;
@@ -43,7 +43,7 @@ export const adminlogin = async (req, res) => {
         message: "Invalid email or Password.",
       });
     }
-    const ispasswordmatch = await bcrypt.compare(Password, user.Password);
+    const ispasswordmatch = await bcrypt.compare(Password, user.Password,);
     if (!ispasswordmatch) {
       return res.status(400).json({
         data: false,
@@ -52,7 +52,7 @@ export const adminlogin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { name: user.name, email: user.email },
+      { name: user.name, email: user.email,username:user.username  ,age:user.age,Address:user.Address},
       process.env.JWT_SIGNATURE,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
@@ -72,6 +72,7 @@ export const adminlogin = async (req, res) => {
     console.log("error while login :", err);
   }
 };
+
 export const changepassword = async (req, res) => {
   const { email, CurrentPassword, NewPassword, ConfirmPassword } = req.body;
   try {
@@ -82,23 +83,29 @@ export const changepassword = async (req, res) => {
         message: "Invalid email...",
       });
     }
-    const ispasswordmatch =await bcrypt.compare(CurrentPassword,user.Password)
-    
-     if(NewPassword !== ConfirmPassword){
-          return res.json({
-            success:false,
-            message:"New password and Confirm password does not match"
-          })
-        }
-      if(ispasswordmatch){
-        const salt =10;
-        const hashpassword = await bcrypt.hash(ConfirmPassword ,salt);
-        const updatePassword =await Admin.updateOne({email:email},{$set:{Password:hashpassword}})
-        return res.status(200).json({
-          success:true,
-          message:"Password Changed Successfully..."
-        })
-      }
+    const ispasswordmatch = await bcrypt.compare(
+      CurrentPassword,
+      user.Password
+    );
+
+    if (NewPassword !== ConfirmPassword) {
+      return res.json({
+        success: false,
+        message: "New password and Confirm password does not match",
+      });
+    }
+    if (ispasswordmatch) {
+      const salt = 10;
+      const hashpassword = await bcrypt.hash(ConfirmPassword, salt);
+      const updatePassword = await Admin.updateOne(
+        { email: email },
+        { $set: { Password: hashpassword } }
+      );
+      return res.status(200).json({
+        success: true,
+        message: "Password Changed Successfully...",
+      });
+    }
   } catch (err) {
     return res.status(500).json({
       success: false,
@@ -106,3 +113,20 @@ export const changepassword = async (req, res) => {
     });
   }
 };
+
+export const GetCurrentAdmin =async(req,res)=>{
+    const authHeader = req.headers.authorization;
+    if(!authHeader || !authHeader.startsWith('Bearer')){
+      return res.status(400).json({
+        success:false,
+        message:"Token not found"
+      })
+    }
+    const token = authHeader.split(" ")[1];
+    const decode= jwt.verify(token,process.env.JWT_SIGNATURE)
+    return res.status(200).json({
+      success:true,
+      message:"Decoded token..",
+      data:decode
+    })
+}
