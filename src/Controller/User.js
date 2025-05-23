@@ -117,3 +117,23 @@ export const changepassword = async (req, res) => {
     });
   }
 };
+
+export const GetCurrentUser =async(req,res)=>{
+  const authHeader =req.headers.authorization;
+  if(!authHeader || !authHeader.startsWith('Bearer')){
+    return res.status(400).json({
+       success:false,
+       message:"Token not found"
+    })
+  }
+           
+    const token=authHeader.split(' ')[1];
+
+    const decode =jwt.verify(token,process.env.JWT_SIGNATURE)
+    res.status(200).json({
+      success:true,
+      message:"Decode user data",
+      data:decode
+    })
+
+}
