@@ -1,5 +1,5 @@
 import User from "../Models/UserRegistration.js";
-import bcrypt from "bcrypt";
+import bcrypt, { hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 export const userregister = async (req, res) => {
   const { name, email, age, username, Address, Password } = req.body;
@@ -37,7 +37,7 @@ export const userregister = async (req, res) => {
 export const userlogin = async (req, res) => {
   const { email, Password } = req.body;
   try {
-    const user = await User.findOne({email});
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -53,9 +53,9 @@ export const userlogin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { name: user.name, email: user.email },//payload action
-      process.env.JWT_SIGNATURE,         //signature or Secrate code
-      { expiresIn:process.env.JWT_EXPIRES_IN} // expire time
+      { name: user.name, email: user.email }, //payload action
+      process.env.JWT_SIGNATURE, //signature or Secrate code
+      { expiresIn: process.env.JWT_EXPIRES_IN } // expire time
     );
 
     res.json({
@@ -69,12 +69,51 @@ export const userlogin = async (req, res) => {
     });
   } catch (err) {
     res.status(400).json({
-        success:false,
-        message:"error"
-    })
+      success: false,
+      message: "error",
+    });
   }
 };
 
-export const userlogout = async (req, res) => {
-  res.send("user logout.......");
+export const changepassword = async (req, res) => {
+  const { email, CurrentPassword, Newpassword, ConfirmPassword } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!email) {
+      return res.status(400).json({
+        success: true,
+        message: " Invalid email...",
+      });
+    }
+    if (Newpassword !== ConfirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password and confirm password does not match",
+      });
+    }
+    const ispasswordmatch = await bcrypt.compare(
+      CurrentPassword,
+      user.Password
+    );
+    if (ispasswordmatch) {
+ const hashpassword =await bcrypt.hash(ConfirmPassword,10)
+      
+        const updatePassword = await User.updateOne(
+          { email: email },
+          { $set: { Password: hashpassword } }
+        );
+
+        return res.json({
+          success: true,
+          message: "Password changed Successfulyy...",
+          data:updatePassword
+        });
+      
+    }
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
 };
