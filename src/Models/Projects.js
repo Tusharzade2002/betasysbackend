@@ -1,10 +1,10 @@
 import mongoose, { Schema } from "mongoose"
 const newProjects = new mongoose.Schema({
-            project:{
+            projectName:{
                 name:String,
                 required:true
             },
-            tasks:{
+            ID:{
                 type:Schema.Types.ObjectId,
                 ref:"Tasks"
             }
