@@ -1,13 +1,13 @@
-import mongoose, { Schema } from "mongoose"
+import mongoose from "mongoose"
 const newProjects = new mongoose.Schema({
             projectName:{
-                name:String,
-                required:true
+                type:String,
+                required: true
             },
-            ID:{
-                type:Schema.Types.ObjectId,
+            tasks:[{
+                type:mongoose.Schema.Types.ObjectId,
                 ref:"Tasks"
-            }
+            }]
 
 })
 const Projects = mongoose.model("Projects",newProjects)

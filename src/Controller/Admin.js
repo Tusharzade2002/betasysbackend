@@ -74,8 +74,18 @@ export const adminlogin = async (req, res) => {
 };
 
 export const changepassword = async (req, res) => {
+
+  console.log("user", req.user)
   const { email, CurrentPassword, NewPassword, ConfirmPassword } = req.body;
   try {
+    if (NewPassword !== ConfirmPassword) {
+      return res.json({
+        success: false,
+        message: "New password and Confirm password does not match",
+      });
+    }
+
+
     const user = await Admin.findOne({ email });
     if (!user) {
       return res.status(400).json({
@@ -83,17 +93,10 @@ export const changepassword = async (req, res) => {
         message: "Invalid email...",
       });
     }
-    const ispasswordmatch = await bcrypt.compare(
-      CurrentPassword,
-      user.Password
-    );
+    console.log("pass", CurrentPassword, user.Password)
+    const ispasswordmatch = await bcrypt.compare(CurrentPassword, user.Password)
+    console.log("ispassword", ispasswordmatch)
 
-    if (NewPassword !== ConfirmPassword) {
-      return res.json({
-        success: false,
-        message: "New password and Confirm password does not match",
-      });
-    }
     if (ispasswordmatch) {
       const salt = 10;
       const hashpassword = await bcrypt.hash(ConfirmPassword, salt);
@@ -101,11 +104,14 @@ export const changepassword = async (req, res) => {
         { email: email },
         { $set: { Password: hashpassword } }
       );
-      return res.status(200).json({
+      if(updatePassword){
+        return res.status(200).json({
         success: true,
         message: "Password Changed Successfully...",
       });
+      }
     }
+    // return res.json({message:"hrllo"})
   } catch (err) {
     return res.status(500).json({
       success: false,
