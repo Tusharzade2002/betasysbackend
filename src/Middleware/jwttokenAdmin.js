@@ -12,7 +12,7 @@ export const verifysuperadmintoken = async (req, res, next) => {
     }
     const token = authHeader.split(" ")[1];
 
-    console.log(token);
+    // console.log(token);
 
     const decoded = jwt.verify(token, process.env.JWT_SIGNATURE);
     console.log(decoded);

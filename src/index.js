@@ -20,33 +20,33 @@ const connectDB = async () => {
   }
 };
 // Ensure indexing if not already created
-(async () => {
-  try {
-    // Get all current indexes
-    const existingIndexes = await Projects.collection.getIndexes();
+// (async () => {
+//   try {
+//     // Get all current indexes
+//     const existingIndexes = await Projects.collection.getIndexes();
     
-    // Check if CollegeTaskname index exists
-    if (!('projectName_1' in existingIndexes)) {
-      console.log("Index on CollegeTaskname not found. Creating...");
+//     // Check if CollegeTaskname index exists
+//     if (!('projectName_1' in existingIndexes)) {
+//       console.log("Index on CollegeTaskname not found. Creating...");
 
-      // Create the index manually
-      await Projects.collection.createIndex({ projectName: 1 }, { unique: true });
+//       // Create the index manually
+//       await Projects.collection.deleteMany({ projectName: 1 }, { unique: true });
 
-      console.log("Index on projectName created successfully.");
-    } else {
-      console.log("Index on projectName already exists.");
-    }
+//       console.log("Index on projectName created successfully.");
+//     } else {
+//       console.log("Index on projectName already exists.");
+//     }
 
-    // Optional: check and create other indexes
-    if (!('projectName_1' in existingIndexes)) {
-      console.log("Index on projectName not found. Creating...");
-      await Projects.collection.createIndex({ tasks: 1 });
-    }
+//     // Optional: check and create other indexes
+//     if (!('projectName_1' in existingIndexes)) {
+//       console.log("Index on projectName not found. Creating...");
+//       await Projects.collection.deleteMany({ tasks: 1 });
+//     }
 
-  } catch (err) {
-    console.error("Index check or creation error:",err);
-}
-})();
+//   } catch (err) {
+//     console.error("Index check or creation error:",err);
+// }
+// })();
 
 app.get("/", (req, res) => {
   res.send("Helooo Developer...!");
