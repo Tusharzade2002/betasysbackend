@@ -2,7 +2,8 @@ import mongoose from "mongoose"
 const newProjects = new mongoose.Schema({
             projectName:{
                 type:String,
-                required: true
+                required: true,
+                unique:true
             },
             tasks:[{
                 type:mongoose.Schema.Types.ObjectId,
@@ -10,5 +11,7 @@ const newProjects = new mongoose.Schema({
             }]
 
 })
+newProjects.index({ tasks: 1 });
+
 const Projects = mongoose.model("Projects",newProjects)
 export default Projects

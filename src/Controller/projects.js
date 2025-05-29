@@ -12,9 +12,8 @@ export const addprojects = async(req,res)=>{
         const ctreatedProject = await Projects.create({projectName, tasks: task || []})
 
         if(!ctreatedProject){
-            return res.status(401).json({message:"Something went wromg, while creating project!"})
+            return res.status(401).json({message:"Something went wrong, while creating project!"})
         }
-
         return res.status(201).json({message:"Project created sccessfully", data: ctreatedProject})
     }
     catch(err){
@@ -23,24 +22,24 @@ export const addprojects = async(req,res)=>{
    
 }
 
-export const Asigntasks =async(req,res)=>{
-    const {UserId , title}=req.body;
-    const task =await Tasks.create({title});
-
-    const user =await Projects.findById(UserId);
-    console.log(user);
-    
-    user.tasks.push(task._id)
-    await user.save()
-    res.json({
-        message:"task assign to user",user,title
-    })
-}
+// export const Asigntasks =async(req,res)=>{
+//     const {UserId , title}=req.body;
+//     const task =await Tasks.create({title});
+//     const user =await Projects.findById(UserId);
+//     console.log(user);
+//     user.tasks.push(task._id)
+//     await user.save()
+//     res.json({
+//         message:"task assign to user",user,title
+//     })
+// }
 
 export const getProjects = async (req, res) => {
+    
+
     try{
         const alldata = await Projects.find().populate('tasks')
-        console.log(alldata)
+        // console.log(alldata)
         if(!alldata){
             return res.status(404).json({message:"Projects not found"})
         }
