@@ -9,10 +9,10 @@ const newTask = new mongoose.Schema({
         type:String,
         required:true
     },
-    assignto:[{
+    assignto:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Members"
-    }]
+    }
 },{timestamps:true})
 
 const Tasks =mongoose.model("Tasks", newTask)

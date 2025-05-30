@@ -25,7 +25,7 @@ export const CreateMember = async (req, res) => {
 
 
   const taskData = await Tasks.findOne({ _id: assignto });
-  taskData.assignto.push(newMember._id)
+  taskData.assignto=newMember._id
 
   const updateTasks = await Tasks.findByIdAndUpdate(
     { _id: assignto },
@@ -51,7 +51,7 @@ export const CreateMember = async (req, res) => {
 }
 };
 export const getallMembers = async(req,res)=>{
-    const alldata  = await Tasks.find();
+    const alldata  = await Tasks.find()
     if(!alldata){
         return res.json({
             success:false,
@@ -64,4 +64,25 @@ export const getallMembers = async(req,res)=>{
                 data:alldata,
                 message:"fetch all data"
             })
+}
+export const DeleteMember =async (req,res)=>{
+  try{
+        const deleteData = await Members.findByIdAndDelete(req.params.id)
+        if(!deleteData){
+          return res.status(400).json({
+            success:false,
+            message:"Please Provide id"
+          })
+        }
+        res.status(200).json({
+          success:true,
+          message:"Member delete succesfully....",
+          data:deleteData
+        })
+  }catch(err){
+  res.status(500).json({
+    success:false,
+    message:"Internal Server Error"
+  })
+  }
 }

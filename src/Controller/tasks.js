@@ -2,10 +2,8 @@ import Tasks from "../Models/Tasks.js"
 import Projects from "../Models/Projects.js"
 
 export const getalltasks = async(req,res)=>{
-      const task = await Tasks.find().populate('Tasks')
+      const task = await Tasks.find().populate("assignto")
       res.json(task)
-      
-
 }
 
 
@@ -22,7 +20,7 @@ export const Asigntasks =async(req,res)=>{
                   name ,
                   description ,
                   duedate ,
-                  assignto : member || []
+                  assignto : member
             })
 
 
