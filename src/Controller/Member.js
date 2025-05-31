@@ -22,8 +22,7 @@ export const CreateMember = async (req, res) => {
         message : "erroe while creating array"
     })
   }
-
-
+ 
   const taskData = await Tasks.findOne({ _id: assignto });
   taskData.assignto=newMember._id
 
@@ -32,6 +31,8 @@ export const CreateMember = async (req, res) => {
     { assignto: taskData.assignto },
     { new: true }
   );
+  console.log(updateTasks);
+  
   if (!updateTasks) {
     return res
       .status(400)
@@ -45,7 +46,7 @@ export const CreateMember = async (req, res) => {
 }catch(err){
      res.status(400).json({
     success: false,
-    message: "internal server error",
+    message: "internal server erro1r",
     error:err.message
   });
 }
@@ -84,5 +85,23 @@ export const DeleteMember =async (req,res)=>{
     success:false,
     message:"Internal Server Error"
   })
+  }
+}
+export const getMemberById =async (req,res)=>{
+  try{
+         const getData = await Members.find({id :req.params._id})
+          if(!getData){
+            return res.status(400).json({
+              success:false,
+              message:"id not found"
+            })
+          }
+          res.status(200).json({
+            success:true,
+            data:getData,
+            message:"Data Fetcched Successfully",
+          })
+  }catch(err){
+
   }
 }
