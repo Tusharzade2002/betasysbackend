@@ -52,7 +52,7 @@ export const adminlogin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { name: user.name, email: user.email,username:user.username  ,age:user.age,Address:user.Address},
+      {name: user.name,username:user.username, email: user.email,id:user._id},
       process.env.JWT_SIGNATURE,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
@@ -62,6 +62,7 @@ export const adminlogin = async (req, res) => {
       message: "login successfully...",
       token,
       data: {
+        
         name: user.name,
         email: user.email,
         age: user.age,

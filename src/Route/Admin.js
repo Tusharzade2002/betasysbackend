@@ -4,11 +4,15 @@ import {addprojects, getProjects} from '../Controller/projects.js'
 import {verifysuperadmintoken} from '../Middleware/jwttokenAdmin.js'
 import {CreateMember,getallMembers,DeleteMember,getMemberById} from '../Controller/Member.js'
 import { Asigntasks,getalltasks} from "../Controller/tasks.js"
+import {insertMediaMiddleware} from '../Controller/media.controller.js'
+import { fieldsupload} from '../Middleware/Multer.js' 
+import {uploadfile} from "../Controller/uploadfiles.js"
 const router =express.Router();
 router.post("/register",adminregister);
 router.post("/login",adminlogin);
 router.post("/changepassword",verifysuperadmintoken,changepassword);
 router.get("/getcurrent",GetCurrentAdmin)
+
 
 
 
@@ -21,4 +25,7 @@ router.post("/create-member",CreateMember)
 router.get("/getmembers",getallMembers)
 router.delete("/deletemember/:id",DeleteMember)
 router.get("/getmember/:id",getMemberById)
+
+router.post('/upload',verifysuperadmintoken,fieldsupload,uploadfile)
+
 export default router

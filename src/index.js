@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import Adminroute from "./Route/Admin.js";
 import Userroute from "./Route/User.js";
 import superadminroute from "./Route/Superadmin.js";
-import Projects from "./Models/Projects.js";
+
 const app = express();
 app.use(express.json());
 dotenv.config();
@@ -51,6 +51,7 @@ const connectDB = async () => {
 app.get("/", (req, res) => {
   res.send("Helooo Developer...!");
 });
+
 app.use("/admin", Adminroute);
 app.use("/user", Userroute);
 app.use("/superadmin", superadminroute);

@@ -15,7 +15,7 @@ export const verifysuperadmintoken = async (req, res, next) => {
     // console.log(token);
 
     const decoded = jwt.verify(token, process.env.JWT_SIGNATURE);
-    console.log(decoded);
+    console.log("decoded",decoded);
     req.user =decoded
     next();
   } catch (err) {
